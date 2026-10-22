@@ -1,4 +1,4 @@
-package Livro.model;
+package br.escola.bibliohaydee.model;
 
 public class LIvro {
 
