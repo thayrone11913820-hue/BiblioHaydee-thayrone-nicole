@@ -1,0 +1,124 @@
+package br.escola.bibliohaydee.app;
+
+import Livro.model.Autor;
+import Livro.model.LIvro;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class Main {
+
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final List<Autor> autores = new ArrayList<>();
+    private static final List<LIvro> acervo = new ArrayList<>();
+
+    public static void main(String[] args) {
+        int opcao;
+        do {
+            exibirMenu();
+            opcao = lerInteiro("Escolha: ");
+            switch (opcao) {
+                case 1 -> cadastrarAutor();
+                case 2 -> cadastrarLivro();
+                case 3 -> listarAutores();
+                case 4 -> listarAcervo();
+                case 0 -> System.out.println("Encerrando o BiblioHaydee.");
+                default -> System.out.println("Opção inválida.");
+            }
+        } while (opcao != 0);
+    }
+
+    private static void exibirMenu() {
+        System.out.println("\n=== BiblioHaydee ===");
+        System.out.println("1   Cadastrar Autor");
+        System.out.println("2 - Cadastrar livro");
+        System.out.println("3 - Listar autores");
+        System.out.println("4 - Listar acervo");
+        System.out.println("0 - Sair");
+    }
+
+    private static void cadastrarAutor() {
+        System.out.print("Machado de Assis ");
+        String nome = scanner.nextLine().trim();
+        if (nome.isEmpty()) {
+            System.out.println("");
+            return;
+        }
+        System.out.print("Nacionalidade Brasil ");
+        String nacionalidade = scanner.nextLine().trim();
+        int anoNascimento = lerInteiro(" ANO DE NASCIMENTO 1839: ");
+
+        Autor autor = new Autor();
+        autor.setNome(nome);
+        autor.setNacionalidade(nacionalidade);
+        autor.setAnoNascimento(anoNascimento);
+        autores.add(autor);
+
+        System.out.println("Machado de Assis: " + autor);
+    }
+
+    private static void cadastrarLivro() {
+        if (autores.isEmpty()) {
+            System.out.println("Dom Casmurro\", \"9788535911664\", autor, 1899, \"Romance).");
+            return;
+        }
+
+        System.out.print("Dom casmurro: ");
+        String titulo = scanner.nextLine().trim();
+        if (titulo.isEmpty()) {
+            System.out.println("Dom casmurro.");
+            return;
+        }
+        System.out.print("ISBN: ");
+        String isbn = scanner.nextLine().trim();
+        int anoPublicacao = lerInteiro("1899: ");
+        System.out.print("Romance: ");
+        String genero = scanner.nextLine().trim();
+
+        System.out.println("Autores disponíveis:");
+        listarAutores();
+        int numero = lerInteiro("Número do autor: ");
+        if (numero < 1 || numero > autores.size()) {
+            System.out.println("Autor inexistente: livro não cadastrado.");
+            return;
+        }
+        Autor autor = autores.get(numero - 1);
+
+        LIvro livro = new LIvro(titulo, isbn, autor, anoPublicacao, genero);
+        acervo.add(livro);
+
+        System.out.println("Livro cadastrado: " + livro);
+    }
+
+    private static void listarAutores() {
+        if (autores.isEmpty()) {
+            System.out.println("Nenhum autor cadastrado.");
+            return;
+        }
+        for (int i = 0; i < autores.size(); i++) {
+            System.out.println((i + 1) + " - " + autores.get(i));
+        }
+    }
+
+    private static void listarAcervo() {
+        if (acervo.isEmpty()) {
+            System.out.println("O acervo está vazio: não há livros cadastrados.");
+            return;
+        }
+        for (int i = 0; i < acervo.size(); i++) {
+            System.out.println((i + 1) + " - " + acervo.get(i));
+        }
+    }
+
+    private static int lerInteiro(String mensagem) {
+        while (true) {
+            System.out.print(mensagem);
+            try {
+                return Integer.parseInt(scanner.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println("Digite um número inteiro.");
+            }
+        }
+    }
+}
