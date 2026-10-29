@@ -2,16 +2,19 @@ package br.escola.bibliohaydee.model;
 
 public class Usuario {
 
+    public static final int LIMITE_PADRAO = 3;
+
     private String nome;
     private String matricula;
     private String tipo;
     private Integer limiteEmprestimos;
     private Integer emprestimosAtivos;
 
+    // Construtor completo (o seu, com limite mínimo 1)
     public Usuario(String nomeUsuario, String matriculaUsuario,
                    String tipoUsuario, Integer limiteUsuario) {
 
-        if (nomeUsuario == null || nomeUsuario.trim().isEmpty()) {
+        if (!nomeValido(nomeUsuario)) {
             throw new IllegalArgumentException("O nome não pode ser vazio.");
         }
 
@@ -25,15 +28,28 @@ public class Usuario {
             throw new IllegalArgumentException("O tipo deve ser ALUNO ou PROFESSOR.");
         }
 
-        if (limiteUsuario == null || limiteUsuario < 0) {
-            throw new IllegalArgumentException("O limite deve ser maior ou igual a zero.");
+        if (limiteUsuario == null || !limiteValido(limiteUsuario)) {
+            throw new IllegalArgumentException("O limite deve ser no mínimo 1.");
         }
 
-        nome = nomeUsuario.trim();
-        matricula = matriculaUsuario.trim();
-        tipo = tipoUsuario.trim().toUpperCase();
-        limiteEmprestimos = limiteUsuario;
-        emprestimosAtivos = 0;
+        this.nome = nomeUsuario.trim();
+        this.matricula = matriculaUsuario.trim();
+        this.tipo = tipoUsuario.trim().toUpperCase();
+        this.limiteEmprestimos = limiteUsuario;
+        this.emprestimosAtivos = 0;
+    }
+
+    // Construtor alternativo: usa o limite padrão
+    public Usuario(String nomeUsuario, String matriculaUsuario, String tipoUsuario) {
+        this(nomeUsuario, matriculaUsuario, tipoUsuario, LIMITE_PADRAO);
+    }
+
+    public static boolean nomeValido(String nome) {
+        return nome != null && !nome.trim().isEmpty();
+    }
+
+    public static boolean limiteValido(int limite) {
+        return limite >= 1;
     }
 
     public String getNome() {
@@ -56,7 +72,23 @@ public class Usuario {
         return emprestimosAtivos;
     }
 
+    public boolean setNome(String nome) {
+        if (!nomeValido(nome)) {
+            return false;
+        }
+        this.nome = nome.trim();
+        return true;
+    }
 
+    public boolean setLimiteEmprestimos(int limiteEmprestimos) {
+        if (!limiteValido(limiteEmprestimos)) {
+            return false;
+        }
+        this.limiteEmprestimos = limiteEmprestimos;
+        return true;
+    }
+
+    @Override
     public String toString() {
         return nome + " | Matrícula: " + matricula
                 + " | Tipo: " + tipo
@@ -64,3 +96,4 @@ public class Usuario {
                 + " | Empréstimos ativos: " + emprestimosAtivos;
     }
 }
+

@@ -18,6 +18,11 @@ public class LIvro {
         this.disponivel = true;
     }
 
+    // Construtor alternativo: gênero não informado
+    public LIvro(String titulo, String isbn, Autor autor, int anoPublicacao) {
+        this(titulo, isbn, autor, anoPublicacao, "Não informado");
+    }
+
     public String getTitulo() {
         return titulo;
     }
@@ -51,3 +56,4 @@ public class LIvro {
                 + " | " + (disponivel ? "disponível" : "indisponível");
     }
 }
+

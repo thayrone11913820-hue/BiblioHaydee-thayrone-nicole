@@ -29,6 +29,7 @@ public class Main {
                 case 4 -> listarAcervo();
                 case 5 -> cadastrarUsuario();
                 case 6 -> listarUsuarios();
+                case 7 -> atualizarUsuario();
                 case 0 -> System.out.println("Encerrando o BiblioHaydee.");
                 default -> System.out.println("Opção inválida.");
             }
@@ -43,6 +44,7 @@ public class Main {
         System.out.println("4 - Listar acervo");
         System.out.println("5 - Cadastrar usuário");
         System.out.println("6 - Listar usuários");
+        System.out.println("7 - Atualizar usuário");
         System.out.println("0 - Sair");
     }
 
@@ -89,7 +91,7 @@ public class Main {
 
         int anoPublicacao = lerInteiro("Ano de publicação: ");
 
-        System.out.print("Gênero: ");
+        System.out.print("Gênero (Enter para não informar): ");
         String genero = scanner.nextLine().trim();
 
         System.out.println("Autores disponíveis:");
@@ -104,9 +106,13 @@ public class Main {
 
         Autor autor = autores.get(numero - 1);
 
-        LIvro livro = new LIvro(
-                titulo, isbn, autor, anoPublicacao, genero
-        );
+        LIvro livro;
+
+        if (genero.isEmpty()) {
+            livro = new LIvro(titulo, isbn, autor, anoPublicacao);
+        } else {
+            livro = new LIvro(titulo, isbn, autor, anoPublicacao, genero);
+        }
 
         acervo.add(livro);
 
@@ -142,10 +148,10 @@ public class Main {
             System.out.print("Nome do usuário: ");
             nome = scanner.nextLine();
 
-            if (nome.trim().isEmpty()) {
+            if (!Usuario.nomeValido(nome)) {
                 System.out.println("O nome não pode ficar vazio.");
             }
-        } while (nome.trim().isEmpty());
+        } while (!Usuario.nomeValido(nome));
 
         String matricula;
 
@@ -171,19 +177,26 @@ public class Main {
         } while (!tipo.equalsIgnoreCase("ALUNO")
                 && !tipo.equalsIgnoreCase("PROFESSOR"));
 
-        int limite;
+        System.out.print("Definir o limite? (S/N): ");
+        String resposta = scanner.nextLine().trim();
 
-        do {
-            limite = lerInteiro("Limite de empréstimos: ");
+        Usuario usuario;
 
-            if (limite < 0) {
-                System.out.println("O limite não pode ser negativo.");
-            }
-        } while (limite < 0);
+        if (resposta.equalsIgnoreCase("S")) {
+            int limite;
 
-        Usuario usuario = new Usuario(
-                nome, matricula, tipo, limite
-        );
+            do {
+                limite = lerInteiro("Limite de empréstimos: ");
+
+                if (!Usuario.limiteValido(limite)) {
+                    System.out.println("O limite deve ser no mínimo 1.");
+                }
+            } while (!Usuario.limiteValido(limite));
+
+            usuario = new Usuario(nome, matricula, tipo, limite);
+        } else {
+            usuario = new Usuario(nome, matricula, tipo);
+        }
 
         usuarios.add(usuario);
 
@@ -202,6 +215,52 @@ public class Main {
         }
     }
 
+    private static Usuario buscarUsuario(String matricula) {
+        for (Usuario u : usuarios) {
+            if (u.getMatricula().equals(matricula.trim())) {
+                return u;
+            }
+        }
+        return null;
+    }
+
+    private static void atualizarUsuario() {
+        System.out.print("Matrícula do usuário: ");
+        String matricula = scanner.nextLine();
+
+        Usuario usuario = buscarUsuario(matricula);
+
+        if (usuario == null) {
+            System.out.println("Usuário não localizado. Nenhuma alteração feita.");
+            return;
+        }
+
+        System.out.println("Usuário encontrado: " + usuario);
+
+        int opcao = lerInteiro("O que atualizar? 1 - nome  2 - limite: ");
+
+        if (opcao == 1) {
+            System.out.print("Novo nome: ");
+            String novoNome = scanner.nextLine();
+
+            if (usuario.setNome(novoNome)) {
+                System.out.println("Nome atualizado: " + usuario);
+            } else {
+                System.out.println("Nome inválido. Nenhuma alteração feita.");
+            }
+        } else if (opcao == 2) {
+            int novoLimite = lerInteiro("Novo limite: ");
+
+            if (usuario.setLimiteEmprestimos(novoLimite)) {
+                System.out.println("Limite atualizado: " + usuario);
+            } else {
+                System.out.println("Limite inválido (mínimo 1). Nenhuma alteração feita.");
+            }
+        } else {
+            System.out.println("Opção inválida. Nenhuma alteração feita.");
+        }
+    }
+
     private static int lerInteiro(String mensagem) {
         while (true) {
             System.out.print(mensagem);
@@ -214,3 +273,4 @@ public class Main {
         }
     }
 }
+
