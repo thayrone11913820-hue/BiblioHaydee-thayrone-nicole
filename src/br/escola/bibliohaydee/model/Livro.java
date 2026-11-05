@@ -1,6 +1,6 @@
 package br.escola.bibliohaydee.model;
 
-public class LIvro {
+public class Livro {
 
     private String titulo;
     private String isbn;
@@ -9,7 +9,7 @@ public class LIvro {
     private String genero;
     private boolean disponivel;
 
-    public LIvro(String titulo, String isbn, Autor autor, int anoPublicacao, String genero) {
+    public Livro(String titulo, String isbn, Autor autor, int anoPublicacao, String genero) {
         this.titulo = titulo;
         this.isbn = isbn;
         this.autor = autor;
@@ -19,7 +19,7 @@ public class LIvro {
     }
 
     // Construtor alternativo: gênero não informado
-    public LIvro(String titulo, String isbn, Autor autor, int anoPublicacao) {
+    public Livro(String titulo, String isbn, Autor autor, int anoPublicacao) {
         this(titulo, isbn, autor, anoPublicacao, "Não informado");
     }
 
@@ -56,4 +56,3 @@ public class LIvro {
                 + " | " + (disponivel ? "disponível" : "indisponível");
     }
 }
-

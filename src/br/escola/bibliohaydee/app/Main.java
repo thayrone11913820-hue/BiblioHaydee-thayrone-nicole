@@ -1,26 +1,33 @@
 package br.escola.bibliohaydee.app;
 
+
 import br.escola.bibliohaydee.model.Autor;
-import br.escola.bibliohaydee.model.LIvro;
+import br.escola.bibliohaydee.model.Livro;
 import br.escola.bibliohaydee.model.Usuario;
+
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+
 public class Main {
+
 
     private static final Scanner scanner = new Scanner(System.in);
     private static final List<Autor> autores = new ArrayList<>();
-    private static final List<LIvro> acervo = new ArrayList<>();
+    private static final List<Livro> acervo = new ArrayList<>();
     private static final List<Usuario> usuarios = new ArrayList<>();
+
 
     public static void main(String[] args) {
         int opcao;
 
+
         do {
             exibirMenu();
             opcao = lerInteiro("Escolha: ");
+
 
             switch (opcao) {
                 case 1 -> cadastrarAutor();
@@ -36,6 +43,7 @@ public class Main {
         } while (opcao != 0);
     }
 
+
     private static void exibirMenu() {
         System.out.println("\n=== BiblioHaydee ===");
         System.out.println("1 - Cadastrar autor");
@@ -48,29 +56,37 @@ public class Main {
         System.out.println("0 - Sair");
     }
 
+
     private static void cadastrarAutor() {
         System.out.print("Nome do autor: ");
         String nome = scanner.nextLine().trim();
+
 
         if (nome.isEmpty()) {
             System.out.println("O nome não pode ficar vazio.");
             return;
         }
 
+
         System.out.print("Nacionalidade: ");
         String nacionalidade = scanner.nextLine().trim();
 
+
         int anoNascimento = lerInteiro("Ano de nascimento: ");
+
 
         Autor autor = new Autor();
         autor.setNome(nome);
         autor.setNacionalidade(nacionalidade);
         autor.setAnoNascimento(anoNascimento);
 
+
         autores.add(autor);
+
 
         System.out.println("Autor cadastrado: " + autor);
     }
+
 
     private static void cadastrarLivro() {
         if (autores.isEmpty()) {
@@ -78,46 +94,60 @@ public class Main {
             return;
         }
 
+
         System.out.print("Título do livro: ");
         String titulo = scanner.nextLine().trim();
+
 
         if (titulo.isEmpty()) {
             System.out.println("O título não pode ficar vazio.");
             return;
         }
 
+
         System.out.print("ISBN: ");
         String isbn = scanner.nextLine().trim();
 
+
         int anoPublicacao = lerInteiro("Ano de publicação: ");
+
 
         System.out.print("Gênero (Enter para não informar): ");
         String genero = scanner.nextLine().trim();
 
+
         System.out.println("Autores disponíveis:");
         listarAutores();
 
+
         int numero = lerInteiro("Número do autor: ");
+
 
         if (numero < 1 || numero > autores.size()) {
             System.out.println("Autor inexistente. Livro não cadastrado.");
             return;
         }
 
+
         Autor autor = autores.get(numero - 1);
 
-        LIvro livro;
+
+        Livro livro;
+
 
         if (genero.isEmpty()) {
-            livro = new LIvro(titulo, isbn, autor, anoPublicacao);
+            livro = new Livro(titulo, isbn, autor, anoPublicacao);
         } else {
-            livro = new LIvro(titulo, isbn, autor, anoPublicacao, genero);
+            livro = new Livro(titulo, isbn, autor, anoPublicacao);
         }
+
 
         acervo.add(livro);
 
+
         System.out.println("Livro cadastrado: " + livro);
     }
+
 
     private static void listarAutores() {
         if (autores.isEmpty()) {
@@ -125,10 +155,12 @@ public class Main {
             return;
         }
 
+
         for (int i = 0; i < autores.size(); i++) {
             System.out.println((i + 1) + " - " + autores.get(i));
         }
     }
+
 
     private static void listarAcervo() {
         if (acervo.isEmpty()) {
@@ -136,39 +168,49 @@ public class Main {
             return;
         }
 
+
         for (int i = 0; i < acervo.size(); i++) {
             System.out.println((i + 1) + " - " + acervo.get(i));
         }
     }
 
+
     private static void cadastrarUsuario() {
         String nome;
+
 
         do {
             System.out.print("Nome do usuário: ");
             nome = scanner.nextLine();
+
 
             if (!Usuario.nomeValido(nome)) {
                 System.out.println("O nome não pode ficar vazio.");
             }
         } while (!Usuario.nomeValido(nome));
 
+
         String matricula;
+
 
         do {
             System.out.print("Matrícula: ");
             matricula = scanner.nextLine();
+
 
             if (matricula.trim().isEmpty()) {
                 System.out.println("A matrícula não pode ficar vazia.");
             }
         } while (matricula.trim().isEmpty());
 
+
         String tipo;
+
 
         do {
             System.out.print("Tipo (ALUNO ou PROFESSOR): ");
             tipo = scanner.nextLine().trim();
+
 
             if (!tipo.equalsIgnoreCase("ALUNO")
                     && !tipo.equalsIgnoreCase("PROFESSOR")) {
@@ -177,32 +219,41 @@ public class Main {
         } while (!tipo.equalsIgnoreCase("ALUNO")
                 && !tipo.equalsIgnoreCase("PROFESSOR"));
 
+
         System.out.print("Definir o limite? (S/N): ");
         String resposta = scanner.nextLine().trim();
 
+
         Usuario usuario;
+
 
         if (resposta.equalsIgnoreCase("S")) {
             int limite;
 
+
             do {
                 limite = lerInteiro("Limite de empréstimos: ");
+
 
                 if (!Usuario.limiteValido(limite)) {
                     System.out.println("O limite deve ser no mínimo 1.");
                 }
             } while (!Usuario.limiteValido(limite));
 
+
             usuario = new Usuario(nome, matricula, tipo, limite);
         } else {
             usuario = new Usuario(nome, matricula, tipo);
         }
 
+
         usuarios.add(usuario);
+
 
         System.out.println("Usuário cadastrado com sucesso!");
         System.out.println(usuario);
     }
+
 
     private static void listarUsuarios() {
         if (usuarios.isEmpty()) {
@@ -210,10 +261,12 @@ public class Main {
             return;
         }
 
+
         for (int i = 0; i < usuarios.size(); i++) {
             System.out.println((i + 1) + " - " + usuarios.get(i));
         }
     }
+
 
     private static Usuario buscarUsuario(String matricula) {
         for (Usuario u : usuarios) {
@@ -224,24 +277,31 @@ public class Main {
         return null;
     }
 
+
     private static void atualizarUsuario() {
         System.out.print("Matrícula do usuário: ");
         String matricula = scanner.nextLine();
 
+
         Usuario usuario = buscarUsuario(matricula);
+
 
         if (usuario == null) {
             System.out.println("Usuário não localizado. Nenhuma alteração feita.");
             return;
         }
 
+
         System.out.println("Usuário encontrado: " + usuario);
 
+
         int opcao = lerInteiro("O que atualizar? 1 - nome  2 - limite: ");
+
 
         if (opcao == 1) {
             System.out.print("Novo nome: ");
             String novoNome = scanner.nextLine();
+
 
             if (usuario.setNome(novoNome)) {
                 System.out.println("Nome atualizado: " + usuario);
@@ -250,6 +310,7 @@ public class Main {
             }
         } else if (opcao == 2) {
             int novoLimite = lerInteiro("Novo limite: ");
+
 
             if (usuario.setLimiteEmprestimos(novoLimite)) {
                 System.out.println("Limite atualizado: " + usuario);
@@ -261,9 +322,11 @@ public class Main {
         }
     }
 
+
     private static int lerInteiro(String mensagem) {
         while (true) {
             System.out.print(mensagem);
+
 
             try {
                 return Integer.parseInt(scanner.nextLine().trim());
@@ -273,4 +336,5 @@ public class Main {
         }
     }
 }
+
 
