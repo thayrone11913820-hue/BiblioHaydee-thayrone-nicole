@@ -9,7 +9,9 @@ public class Livro {
     private String genero;
     private boolean disponivel;
 
-    public Livro(String titulo, String isbn, Autor autor, int anoPublicacao, String genero) {
+    public Livro(String titulo, String isbn, Autor autor,
+                 int anoPublicacao, String genero) {
+
         this.titulo = titulo;
         this.isbn = isbn;
         this.autor = autor;
@@ -18,41 +20,60 @@ public class Livro {
         this.disponivel = true;
     }
 
-    // Construtor alternativo: gênero não informado
-    public Livro(String titulo, String isbn, Autor autor, int anoPublicacao) {
-        this(titulo, isbn, autor, anoPublicacao, "Não informado");
-    }
-
     public String getTitulo() {
         return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
     public String getIsbn() {
         return isbn;
     }
 
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
     public Autor getAutor() {
         return autor;
+    }
+
+    public void setAutor(Autor autor) {
+        this.autor = autor;
     }
 
     public int getAnoPublicacao() {
         return anoPublicacao;
     }
 
+    public void setAnoPublicacao(int anoPublicacao) {
+        this.anoPublicacao = anoPublicacao;
+    }
+
     public String getGenero() {
         return genero;
+    }
+
+    public void setGenero(String genero) {
+        this.genero = genero;
     }
 
     public boolean isDisponivel() {
         return disponivel;
     }
 
+    public void setDisponivel(boolean disponivel) {
+        this.disponivel = disponivel;
+    }
+
     @Override
     public String toString() {
         return "\"" + titulo + "\" - " + autor.getNome()
                 + " | ISBN: " + isbn
-                + " | " + anoPublicacao
-                + " | " + genero
-                + " | " + (disponivel ? "disponível" : "indisponível");
+                + " | Ano: " + anoPublicacao
+                + " | Gênero: " + genero
+                + " | Disponível: " + (disponivel ? "Sim" : "Não");
     }
 }

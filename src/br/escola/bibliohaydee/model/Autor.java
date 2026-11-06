@@ -9,6 +9,12 @@ public class Autor {
     public Autor() {
     }
 
+    public Autor(String nome, String nacionalidade, int anoNascimento) {
+        this.nome = nome;
+        this.nacionalidade = nacionalidade;
+        this.anoNascimento = anoNascimento;
+    }
+
     public String getNome() {
         return nome;
     }

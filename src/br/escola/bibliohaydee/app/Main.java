@@ -1,340 +1,267 @@
 package br.escola.bibliohaydee.app;
 
-
 import br.escola.bibliohaydee.model.Autor;
 import br.escola.bibliohaydee.model.Livro;
-import br.escola.bibliohaydee.model.Usuario;
-
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
-
 
 public class Main {
 
-
     private static final Scanner scanner = new Scanner(System.in);
-    private static final List<Autor> autores = new ArrayList<>();
-    private static final List<Livro> acervo = new ArrayList<>();
-    private static final List<Usuario> usuarios = new ArrayList<>();
-
+    private static final ArrayList<Livro> livros = new ArrayList<>();
 
     public static void main(String[] args) {
-        int opcao;
 
+        carregarAcervo();
+
+        int opcao;
 
         do {
             exibirMenu();
             opcao = lerInteiro("Escolha: ");
 
-
             switch (opcao) {
-                case 1 -> cadastrarAutor();
-                case 2 -> cadastrarLivro();
-                case 3 -> listarAutores();
-                case 4 -> listarAcervo();
-                case 5 -> cadastrarUsuario();
-                case 6 -> listarUsuarios();
-                case 7 -> atualizarUsuario();
-                case 0 -> System.out.println("Encerrando o BiblioHaydee.");
-                default -> System.out.println("Opção inválida.");
+                case 1:
+                    pesquisarPorTitulo(livros);
+                    break;
+
+                case 2:
+                    pesquisarPorAutor(livros);
+                    break;
+
+                case 3:
+                    gerarRelatorio(livros);
+                    break;
+
+                case 4:
+                    listarLivros(livros);
+                    break;
+
+                case 0:
+                    System.out.println("Encerrando o sistema...");
+                    break;
+
+                default:
+                    System.out.println("Opção inválida.");
             }
+
         } while (opcao != 0);
+
+        scanner.close();
     }
 
-
     private static void exibirMenu() {
-        System.out.println("\n=== BiblioHaydee ===");
-        System.out.println("1 - Cadastrar autor");
-        System.out.println("2 - Cadastrar livro");
-        System.out.println("3 - Listar autores");
-        System.out.println("4 - Listar acervo");
-        System.out.println("5 - Cadastrar usuário");
-        System.out.println("6 - Listar usuários");
-        System.out.println("7 - Atualizar usuário");
+
+        System.out.println("\n===== BIBLIOHAYDEE =====");
+        System.out.println("1 - Pesquisar livro por título");
+        System.out.println("2 - Pesquisar livro por autor");
+        System.out.println("3 - Gerar relatório do acervo");
+        System.out.println("4 - Listar todos os livros");
         System.out.println("0 - Sair");
     }
 
-
-    private static void cadastrarAutor() {
-        System.out.print("Nome do autor: ");
-        String nome = scanner.nextLine().trim();
-
-
-        if (nome.isEmpty()) {
-            System.out.println("O nome não pode ficar vazio.");
-            return;
-        }
-
-
-        System.out.print("Nacionalidade: ");
-        String nacionalidade = scanner.nextLine().trim();
-
-
-        int anoNascimento = lerInteiro("Ano de nascimento: ");
-
-
-        Autor autor = new Autor();
-        autor.setNome(nome);
-        autor.setNacionalidade(nacionalidade);
-        autor.setAnoNascimento(anoNascimento);
-
-
-        autores.add(autor);
-
-
-        System.out.println("Autor cadastrado: " + autor);
-    }
-
-
-    private static void cadastrarLivro() {
-        if (autores.isEmpty()) {
-            System.out.println("Cadastre um autor antes de cadastrar livros.");
-            return;
-        }
-
-
-        System.out.print("Título do livro: ");
-        String titulo = scanner.nextLine().trim();
-
-
-        if (titulo.isEmpty()) {
-            System.out.println("O título não pode ficar vazio.");
-            return;
-        }
-
-
-        System.out.print("ISBN: ");
-        String isbn = scanner.nextLine().trim();
-
-
-        int anoPublicacao = lerInteiro("Ano de publicação: ");
-
-
-        System.out.print("Gênero (Enter para não informar): ");
-        String genero = scanner.nextLine().trim();
-
-
-        System.out.println("Autores disponíveis:");
-        listarAutores();
-
-
-        int numero = lerInteiro("Número do autor: ");
-
-
-        if (numero < 1 || numero > autores.size()) {
-            System.out.println("Autor inexistente. Livro não cadastrado.");
-            return;
-        }
-
-
-        Autor autor = autores.get(numero - 1);
-
-
-        Livro livro;
-
-
-        if (genero.isEmpty()) {
-            livro = new Livro(titulo, isbn, autor, anoPublicacao);
-        } else {
-            livro = new Livro(titulo, isbn, autor, anoPublicacao);
-        }
-
-
-        acervo.add(livro);
-
-
-        System.out.println("Livro cadastrado: " + livro);
-    }
-
-
-    private static void listarAutores() {
-        if (autores.isEmpty()) {
-            System.out.println("Nenhum autor cadastrado.");
-            return;
-        }
-
-
-        for (int i = 0; i < autores.size(); i++) {
-            System.out.println((i + 1) + " - " + autores.get(i));
-        }
-    }
-
-
-    private static void listarAcervo() {
-        if (acervo.isEmpty()) {
-            System.out.println("O acervo está vazio.");
-            return;
-        }
-
-
-        for (int i = 0; i < acervo.size(); i++) {
-            System.out.println((i + 1) + " - " + acervo.get(i));
-        }
-    }
-
-
-    private static void cadastrarUsuario() {
-        String nome;
-
-
-        do {
-            System.out.print("Nome do usuário: ");
-            nome = scanner.nextLine();
-
-
-            if (!Usuario.nomeValido(nome)) {
-                System.out.println("O nome não pode ficar vazio.");
-            }
-        } while (!Usuario.nomeValido(nome));
-
-
-        String matricula;
-
-
-        do {
-            System.out.print("Matrícula: ");
-            matricula = scanner.nextLine();
-
-
-            if (matricula.trim().isEmpty()) {
-                System.out.println("A matrícula não pode ficar vazia.");
-            }
-        } while (matricula.trim().isEmpty());
-
-
-        String tipo;
-
-
-        do {
-            System.out.print("Tipo (ALUNO ou PROFESSOR): ");
-            tipo = scanner.nextLine().trim();
-
-
-            if (!tipo.equalsIgnoreCase("ALUNO")
-                    && !tipo.equalsIgnoreCase("PROFESSOR")) {
-                System.out.println("Digite ALUNO ou PROFESSOR.");
-            }
-        } while (!tipo.equalsIgnoreCase("ALUNO")
-                && !tipo.equalsIgnoreCase("PROFESSOR"));
-
-
-        System.out.print("Definir o limite? (S/N): ");
-        String resposta = scanner.nextLine().trim();
-
-
-        Usuario usuario;
-
-
-        if (resposta.equalsIgnoreCase("S")) {
-            int limite;
-
-
-            do {
-                limite = lerInteiro("Limite de empréstimos: ");
-
-
-                if (!Usuario.limiteValido(limite)) {
-                    System.out.println("O limite deve ser no mínimo 1.");
-                }
-            } while (!Usuario.limiteValido(limite));
-
-
-            usuario = new Usuario(nome, matricula, tipo, limite);
-        } else {
-            usuario = new Usuario(nome, matricula, tipo);
-        }
-
-
-        usuarios.add(usuario);
-
-
-        System.out.println("Usuário cadastrado com sucesso!");
-        System.out.println(usuario);
-    }
-
-
-    private static void listarUsuarios() {
-        if (usuarios.isEmpty()) {
-            System.out.println("Nenhum usuário cadastrado.");
-            return;
-        }
-
-
-        for (int i = 0; i < usuarios.size(); i++) {
-            System.out.println((i + 1) + " - " + usuarios.get(i));
-        }
-    }
-
-
-    private static Usuario buscarUsuario(String matricula) {
-        for (Usuario u : usuarios) {
-            if (u.getMatricula().equals(matricula.trim())) {
-                return u;
-            }
-        }
-        return null;
-    }
-
-
-    private static void atualizarUsuario() {
-        System.out.print("Matrícula do usuário: ");
-        String matricula = scanner.nextLine();
-
-
-        Usuario usuario = buscarUsuario(matricula);
-
-
-        if (usuario == null) {
-            System.out.println("Usuário não localizado. Nenhuma alteração feita.");
-            return;
-        }
-
-
-        System.out.println("Usuário encontrado: " + usuario);
-
-
-        int opcao = lerInteiro("O que atualizar? 1 - nome  2 - limite: ");
-
-
-        if (opcao == 1) {
-            System.out.print("Novo nome: ");
-            String novoNome = scanner.nextLine();
-
-
-            if (usuario.setNome(novoNome)) {
-                System.out.println("Nome atualizado: " + usuario);
-            } else {
-                System.out.println("Nome inválido. Nenhuma alteração feita.");
-            }
-        } else if (opcao == 2) {
-            int novoLimite = lerInteiro("Novo limite: ");
-
-
-            if (usuario.setLimiteEmprestimos(novoLimite)) {
-                System.out.println("Limite atualizado: " + usuario);
-            } else {
-                System.out.println("Limite inválido (mínimo 1). Nenhuma alteração feita.");
-            }
-        } else {
-            System.out.println("Opção inválida. Nenhuma alteração feita.");
-        }
-    }
-
-
     private static int lerInteiro(String mensagem) {
+
         while (true) {
             System.out.print(mensagem);
 
-
             try {
-                return Integer.parseInt(scanner.nextLine().trim());
+                return Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println("Digite um número inteiro.");
+                System.out.println("Digite um número válido.");
             }
         }
     }
+
+    private static void carregarAcervo() {
+
+        Autor machado = new Autor("Machado de Assis", "Brasileira", 1839);
+        Autor graciliano = new Autor("Graciliano Ramos", "Brasileira", 1892);
+        Autor aluisio = new Autor("Aluísio Azevedo", "Brasileira", 1857);
+        Autor jorge = new Autor("Jorge Amado", "Brasileira", 1912);
+
+        livros.add(new Livro(
+                "Dom Casmurro",
+                "ISBN001",
+                machado,
+                1899,
+                "Romance"
+        ));
+
+        livros.add(new Livro(
+                "Memórias Póstumas de Brás Cubas",
+                "ISBN002",
+                machado,
+                1881,
+                "Romance"
+        ));
+
+        livros.add(new Livro(
+                "Quincas Borba",
+                "ISBN003",
+                machado,
+                1891,
+                "Romance"
+        ));
+
+        livros.add(new Livro(
+                "Vidas Secas",
+                "ISBN004",
+                graciliano,
+                1938,
+                "Romance"
+        ));
+
+        livros.add(new Livro(
+                "O Cortiço",
+                "ISBN005",
+                aluisio,
+                1890,
+                "Naturalismo"
+        ));
+
+        livros.add(new Livro(
+                "Capitães da Areia",
+                "ISBN006",
+                jorge,
+                1937,
+                "Romance"
+        ));
+    }
+
+    private static void pesquisarPorTitulo(ArrayList<Livro> livros) {
+
+        System.out.print("Digite parte do título: ");
+        String termo = scanner.nextLine();
+
+        if (termo.isBlank()) {
+            System.out.println("Problema: o termo de pesquisa não pode ser vazio.");
+            return;
+        }
+
+        termo = termo.trim().toLowerCase();
+
+        boolean encontrou = false;
+        int quantidade = 0;
+
+        for (Livro livro : livros) {
+
+            String titulo = livro.getTitulo().toLowerCase();
+
+            if (titulo.contains(termo)) {
+                System.out.println(livro);
+                encontrou = true;
+                quantidade++;
+            }
+        }
+
+        if (!encontrou) {
+            System.out.println("Não há resultados para essa pesquisa.");
+        } else {
+            System.out.println("Livros encontrados: " + quantidade);
+        }
+    }
+
+    private static void pesquisarPorAutor(ArrayList<Livro> livros) {
+
+        System.out.print("Digite o nome ou sobrenome do autor: ");
+        String termo = scanner.nextLine();
+
+        if (termo.isBlank()) {
+            System.out.println("Problema: o nome do autor não pode ser vazio.");
+            return;
+        }
+
+        termo = termo.trim().toLowerCase();
+
+        boolean encontrou = false;
+        int quantidade = 0;
+
+        for (Livro livro : livros) {
+
+            String nomeAutor = livro.getAutor().getNome()
+                    .trim()
+                    .toLowerCase();
+
+            boolean corresponde = nomeAutor.equals(termo);
+
+            if (!corresponde) {
+
+                String[] partes = nomeAutor.split("\\s+");
+
+                for (String parte : partes) {
+
+                    if (parte.equals(termo)) {
+                        corresponde = true;
+                        break;
+                    }
+                }
+            }
+
+            if (corresponde) {
+                System.out.println(livro);
+                encontrou = true;
+                quantidade++;
+            }
+        }
+
+        if (!encontrou) {
+            System.out.println("Autor não encontrado.");
+        } else {
+            System.out.println("Livros encontrados: " + quantidade);
+        }
+    }
+
+    private static void gerarRelatorio(ArrayList<Livro> livros) {
+
+        StringBuilder relatorio = new StringBuilder();
+
+        relatorio.append("\n===== RELATÓRIO DO ACERVO =====\n");
+
+        if (livros.isEmpty()) {
+
+            relatorio.append("Não há livros cadastrados no acervo.\n");
+
+        } else {
+
+            int numero = 1;
+
+            for (Livro livro : livros) {
+
+                relatorio.append("Livro ").append(numero).append("\n");
+                relatorio.append("Título: ")
+                        .append(livro.getTitulo()).append("\n");
+
+                relatorio.append("Autor: ")
+                        .append(livro.getAutor().getNome()).append("\n");
+
+                relatorio.append("Disponibilidade: ")
+                        .append(livro.isDisponivel() ? "Disponível" : "Indisponível")
+                        .append("\n");
+
+                relatorio.append("-----------------------------\n");
+
+                numero++;
+            }
+
+            relatorio.append("Total de livros: ")
+                    .append(livros.size())
+                    .append("\n");
+        }
+
+        System.out.println(relatorio.toString());
+    }
+
+    private static void listarLivros(ArrayList<Livro> livros) {
+
+        if (livros.isEmpty()) {
+            System.out.println("Não há livros cadastrados.");
+            return;
+        }
+
+        for (Livro livro : livros) {
+            System.out.println(livro);
+        }
+    }
 }
-
-
