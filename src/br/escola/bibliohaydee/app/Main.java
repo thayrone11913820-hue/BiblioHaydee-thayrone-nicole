@@ -204,7 +204,7 @@ public class Main {
                 encontrou = true;
                 quantidade++;
             }
-        }
+      }
 
         if (!encontrou) {
             System.out.println("Autor não encontrado.");
